@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Table } from "./Table";
+import { Table } from "./Table/Table";
 import { HeaderControl } from "./HeaderControl";
 
 export class App extends React.Component {

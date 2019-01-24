@@ -1,7 +1,6 @@
 import React from "react";
-import { Table as TableStrap } from "reactstrap";
 
-import tranding_hours_data from "../data/trading-hours.json";
+import tranding_hours_data from "../../data/trading-hours.json";
 import { TableRow } from "./TableRow";
 
 const currentDate = new Date();
