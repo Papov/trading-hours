@@ -2,6 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Input as InputStrap, Label } from "reactstrap";
 
+const styles = {
+	labelRight: {
+		paddingLeft: "25px"
+	},
+	input: {
+		marginRight: "5px",
+		marginLeft: "5px"
+	}
+};
+
 const Input = ({
 	left = null,
 	right = null,
@@ -22,8 +32,14 @@ const Input = ({
 			placeholder={placeholder}
 			onChange={onChange}
 			checked={checked}
+			style={styles.input}
 		/>
-		{label && right && <Label htmlFor={id}>{label}</Label>}
+		{label &&
+			right && (
+				<Label style={styles.labelRight} htmlFor={id}>
+					{label}
+				</Label>
+			)}
 	</React.Fragment>
 );
 
