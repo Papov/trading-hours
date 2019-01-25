@@ -1,29 +1,33 @@
 import React from "react";
 
-import tranding_hours_data from "../../data/trading-hours.json";
 import { TableRow } from "./TableRow";
 
 const currentDate = new Date();
 
 const TableContainer = (Component) =>
 	class Table extends React.Component {
-		_getHours = (number) => new Date(number).getHours();
-		_getDay = (number) => new Date(number).getDay();
+		state = {
+			tranding_hours_data: [],
+			children: null
+		};
+
+		getHours = (number) => new Date(number).getHours();
+		getDay = (number) => new Date(number).getDay();
 
 		isOpenNow = (arr) => {
-			let currentDay = this._getDay(currentDate);
-			let currentHours = this._getHours(currentDate);
+			let currentDay = this.getDay(currentDate);
+			let currentHours = this.getHours(currentDate);
 			let isOpen = arr.some(
 				(item) =>
-					this._getHours(item.from) <= currentHours &&
-					this._getHours(item.to) >= currentHours &&
-					this._getDay(item.from) === currentDay
+					this.getDay(item.from) === currentDay &&
+					this.getHours(item.from) <= currentHours &&
+					this.getHours(item.to) >= currentHours
 			);
 			return isOpen;
 		};
 
-		mapTrandingData = () =>
-			tranding_hours_data.map((item, index) => {
+		mapTrandingData = () => {
+			let data = this.state.tranding_hours_data.map((item, index) => {
 				let isOpen = this.isOpenNow(item.tradingHours);
 				let onlyOpen = this.props.onlyOpen && !isOpen;
 				if (onlyOpen) {
@@ -39,9 +43,45 @@ const TableContainer = (Component) =>
 					/>
 				);
 			});
+			this.setState(
+				{
+					children: data
+				},
+				() => {
+					this.updateData = setTimeout(this.mapTrandingData, 1000);
+				}
+			);
+		};
+
+		getTradingHoursData = () => {
+			fetch("/trading-hours.json")
+				.then((response) => response.json())
+				.then((data) => {
+					this.setState(
+						{
+							tranding_hours_data: data
+						},
+						() => {
+							this.mapTrandingData();
+						}
+					);
+				});
+		};
+
+		componentDidUpdate(prevProps, prevState) {
+			if (prevProps.onlyOpen === true && this.props.onlyOpen === false) {
+				clearTimeout(this.updateData);
+				this.getTradingHoursData();
+			}
+		}
+
+		componentDidMount() {
+			this.getTradingHoursData();
+		}
 
 		render() {
-			return <Component>{this.mapTrandingData()}</Component>;
+			console.log("render");
+			return <Component>{this.state.children}</Component>;
 		}
 	};
 export { TableContainer };
