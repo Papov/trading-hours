@@ -68,6 +68,7 @@ const TableContainer = (Component) =>
 				});
 		};
 
+		// GET NEW DATA FROM FETCH WHEN I CLICK (SHOW ALL), just delete this if you don't want it
 		componentDidUpdate(prevProps, prevState) {
 			if (prevProps.onlyOpen === true && this.props.onlyOpen === false) {
 				clearTimeout(this.updateData);
